@@ -106,6 +106,16 @@ class TestLoader:
             test_method = test_case_class(test_method_name)
             suite.add_test(test_method)
         return suite
+
+class TestRunner:
+
+    def __init__(self):
+        self.result = TestResult()
+
+    def run(self, test):
+        test.run(self.result)
+        print(self.result.summary())
+        return self.result
     
 class TestLoaderTest(TestCase):
 
@@ -238,8 +248,15 @@ class MyTest(TestCase):
         print('test_c')
 
 if __name__ == '__main__':
-    result = TestResult()
     loader = TestLoader()
-    suite = loader.make_suite(TestLoaderTest)
-    suite.run(result)
-    print(result.summary())
+    test_case_suite = loader.make_suite(TestCaseTest)
+    test_suite_suite = loader.make_suite(TestSuiteTest)
+    test_load_suite = loader.make_suite(TestLoaderTest)
+
+    suite = TestSuite()
+    suite.add_test(test_case_suite)
+    suite.add_test(test_suite_suite)
+    suite.add_test(test_load_suite)
+
+    runner = TestRunner()
+    runner.run(suite)
